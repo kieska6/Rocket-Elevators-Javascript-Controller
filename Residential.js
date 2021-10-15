@@ -1,8 +1,10 @@
-let elevatorID = 1;
-let floorRequestButtonID = 1;
-let callButtonID = 1;
+//Variables
+var elevatorID = 1;
+var floorRequestButtonID = 1;
+var callButtonID = 1;
 
 class Column{
+
     constructor(_id, _status, _amountOfFloors, _amountOfElevators){
         this.ID = _id;
         this.status = _status;
@@ -14,12 +16,8 @@ class Column{
         this.createElevators(_amountOfFloors, _amountOfElevators);
         this.createCallButtons(_amountOfFloors)
     }
-} 
-    
-    
-
     //---------------------------------Methods--------------------------------------------
-    createCallButtons(_amountOfFloors); {
+    createCallButtons(_amountOfFloors) {
         
         for (i = 0; i < _amountOfFloors; i++) {
             if (i < _amountOfFloors) {
@@ -36,7 +34,7 @@ class Column{
         }
     }
 
-    createElevators(_amountOfFloors, _amountOfElevators); {
+    createElevators(_amountOfFloors, _amountOfElevators) {
         for (i = 0; i < _amountOfFloors; i++) {
             let elevator = new Elevator(elevatorID, idle, _amountOfFloors, 1); //id, status, amountOfFloors, currentFloor
             this.elevatorsList.push(elevator);
@@ -45,7 +43,7 @@ class Column{
     }
 
     //Simulate when a user press a button outside the elevator
-    requestElevator (floor, direction); {
+    requestElevator (floor, direction) {
         let elevator = findElevator(floor, direction);
         elevator.floorRequestList.push(floor); 
         elevator.move();
@@ -56,20 +54,20 @@ class Column{
     //We use a score system depending on the current elevators state. Since the bestScore and the referenceGap are 
     //higher values than what could be possibly calculated, the first elevator will always become the default bestElevator, 
     //before being compared with to other elevators. if two elevators get the same score, the nearest one is prioritized.
-    findElevator(requestedFloor, requestedDirection); {
+    findElevator(requestedFloor, requestedDirection) {
         let bestElevator = null;
         let bestScore = 5;
         this. referenceGap = 10000000;
-        let bestElevatorInformations = [];
+        let bestElevatorInformations = [bestElevator, bestScore, referenceGap];
 
         for (i = 0; i < elevatorsList.size; i++) {
             //The elevator is at my floor and going in the direction I want
             if (requestedFloor == elevator.currentFloor && elevator.status == "stopped" && requestedDirection == elevator.direction){
-                bestElevatorInformations = this.checkifElevatorIsBetter (0, elevator, bestScore, referenceGap, bestElevator, requestedFloor)
+                bestElevatorInformations = this.checkifElevatorIsBetter (1, elevator, bestScore, referenceGap, bestElevator, requestedFloor)
             }
             //The elevator is lower than me, is coming up and I want to go up
             else if (requestedFloor > elevator.currentFloor && elevator.direction == "up" && requestedDirection == elevator.direction){
-                bestElevatorInformations = this.checkifElevatorIsBetter (1, elevator, bestScore, referenceGap, bestElevator, requestedFloor)
+                bestElevatorInformations = this.checkifElevatorIsBetter (2, elevator, bestScore, referenceGap, bestElevator, requestedFloor)
             }
             //The elevator is higher than me, is coming down and I want to go down
             else if (requestedFloor < elevator.currentFloor && elevator.direction == "down" && requestedDirection == elevator.direction) {
@@ -90,7 +88,7 @@ class Column{
         return bestElevator
     }
 
-    checkifElevatorIsBetter(scoreToCheck, newElevator, bestScore, referenceGap, bestElevator, floor); {
+    checkifElevatorIsBetter(scoreToCheck, newElevator, bestScore, referenceGap, bestElevator, floor) {
         if (scoreToCheck < bestScore){
             bestScore = scoreToCheck;
             bestElevator = newElevator;
@@ -105,6 +103,11 @@ class Column{
         }
         return bestElevatorInformations[bestElevator, bestScore, referenceGap]
     }
+} 
+    
+    
+
+    
 
 
 class Elevator{
@@ -122,7 +125,7 @@ class Elevator{
     
 
     createFloorRequestButtons(_amountOfFloors){
-        for (i = 0; i < _amountOfFloors; i++)
+        for (i = 0; i < _amountOfFloors; i++) {
             this.floorRequestButton = new FloorRequestButton(floorRequestButtonID, "OFF", buttonFloor);//id, status, floor
             floorButtonsList.push(floorRequestButton);
             floorRequestButtonID = floorRequestButtonID + 1;
@@ -130,15 +133,15 @@ class Elevator{
     }
 
     //Simulate when a user press a button inside the elevator
-    requestFloor(floor);{
+    requestFloor(floor) {
         requestList.push(floor);
         move();
         operateDoors();
     }
 
-    move(); {
+    move() {
         while(requestList != empty) {
-            let destination = requestList[0];
+            var destination = this.floorRequestList[0];
             this.status = "moving";
             if (this.currentFloor < destination){
                 direction = "up";
@@ -161,7 +164,7 @@ class Elevator{
         this.status = "idle"
     }
 
-    sortFloorList();{
+    sortFloorList(){
         if (this.direction = "up"){
             sort(requestList);
         }else{ 
@@ -169,58 +172,68 @@ class Elevator{
         }
     }
 
-    operateDoors();{
-        door.status = "opened";
-        setTimeout(5);
-        if (THIS IS NOT overweight){
-            door.status = "closing";
-            if (no obstruction){
-                door.status = "closed";
-            }else{
+    operateDoors(){
+        this.door.status = "opened";
+        //setTimeout(5);
+        if (this.overweight){
+            this.door.status = "closing";
+            if (this !=="obstructed"){
+                this.door.status = "closed";
+            }
+            else{
                 operateDoors();
-            }      
-        }else{
-            WHILE THIS IS overweight
-                Activate overweight alarm
-            ENDWHILE
+            } 
+        }     
+        else{
+            while (this.overweight){
+                this.overweight = false;
+            }
             operateDoors();
         }
     }
 
 } //Elevator
 
-/*DEFINE CallButton USING _id, _status, _floor, _direction
-    this. ID TO _id
-    this. status TO _status
-    this. floor TO _floor
-    this. direction TO _direction
-ENDDEFINE*/
+class CallButton {
+    constructor(_id, _status, _floor, _direction){
+        this.ID = _id;
+        this. status = _status;
+        this. floor = _floor;
+        this. direction = _direction;
+    }
+    
+}
 
-/*DEFINE FloorRequestButton USING _id, _status, _floor
-    this. ID TO _id
-    this. status TO _status
-    this. floor TO _floor
-ENDDEFINE*/
+class FloorRequestButton{
+    constructor(_id, _status, _floor){
+        this.ID = _id;
+        this.status = _status;
+        this.floor = _floor;
+    }  
+}
 
-/*DEFINE Door USING _id, _status
-    this. ID TO _id
-    this. status TO _status
-ENDDEFINE*/
+class Door{
+    constructor(_id, _status){
+        this.ID = _id;
+        this.status = _status;
+    }
+}
 
 
 //==================================Scenario 1=================================================
 scenario1 = () =>{
     let column = new Column(1, "online", 10, 2) //id, status, amountOfFloors, amountOfElevators
-    column.elevatorsList[0].currentFloor = 10
+    column.elevatorsList[0].currentFloor = 2
     column.elevatorsList[1].currentFloor = 6
     let elevator = column.requestElevator(3, "Up")
     elevator.requestFloor(7)
+    console.log()
 }
 //==================================End Scenario 1=============================================
 
 
 //==================================Scenario 2=================================================
-scenario2 = () =>{
+/* scenario2 = () =>{
     let column = new Column(1, "online", 10, 2) //id, status, amountOfFloors, amountOfElevators
     column.elevatorsList[0].currentFloor = 10
     column.elevatorsList[1].currentFloor = 3
@@ -234,11 +247,11 @@ scenario2 = () =>{
     //Part 3
     let elevator = column.requestElevator(9, "Down")
     elevator.requestFloor(2)
-}
+} */
 //==================================End Scenario 2=============================================
 
 //==================================Scenario 3=================================================
-scenario3 = () =>{
+/* scenario3 = () =>{
     let column = new Column(1, "online", 10, 2) //id, status, amountOfFloors, amountOfElevators
     column.elevatorsList[0].currentFloor = 10
     column.elevatorsList[1].currentFloor = 3
@@ -249,5 +262,5 @@ scenario3 = () =>{
     //Part 2
     let elevator = column.requestElevator(10, "Down")
     elevator.requestFloor(3)
-}
+} */
 //==================================End Scenario 3===========================================
